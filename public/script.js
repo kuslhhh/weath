@@ -1,6 +1,8 @@
 const apiKey = "115cbf624d524785d7fbf9d81cde845d";
 const apiUrl = "https://api.openweathermap.org/data/2.5/weather?&units=metric&q=";
 
+const ipApiUrl = "https://api.ipify.org?format=json";
+
 const searchBox = document.querySelector(".search input");
 const searchBtn = document.querySelector(".search button");
 const weatherIcon = document.querySelector(".weather-icon");
@@ -9,22 +11,30 @@ const historySection = document.querySelector(".history");
 const weatherSection = document.querySelector(".weather");
 const errorSection = document.querySelector(".error");
 
-async function fetchHistory() {
-    const response = await fetch('/history');
-    const data = await response.json();
-    return data.history || [];
+
+async function getUserIp() {
+    try {
+        const response = await fetch(ipApiUrl);
+        const data = await response.json();
+        return data.ip;
+    } catch (error) {
+        console.error("Failed to get IP address:", error);
+        return null;
+    }
 }
 
-async function saveToHistory(city) {
-    await fetch('/history', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ city })
-    });
+
+function getLocalHistory() {
+    const history = localStorage.getItem('weatherHistory');
+    return history ? JSON.parse(history) : [];
 }
 
-async function updateHistory() {
-    const history = await fetchHistory();
+function saveLocalHistory(history) {
+    localStorage.setItem('weatherHistory', JSON.stringify(history));
+}
+
+function updateHistory() {
+    const history = getLocalHistory();
     historyList.innerHTML = "";
     history.forEach((city) => {
         const li = document.createElement("li");
@@ -68,7 +78,11 @@ async function checkWeather(city) {
         errorSection.style.display = "none";
         historySection.style.display = "none";
 
-        await saveToHistory(city);
+        const history = getLocalHistory();
+        if (!history.includes(city)) {
+            history.push(city);
+            saveLocalHistory(history);
+        }
         updateHistory();
     }
 }
