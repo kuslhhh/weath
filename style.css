@@ -1,0 +1,24 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+body{
+    background-color: #1A1A1A;
+    color: #FFFFFF; 
+}
+
+h1, h2, h3, p, a{
+    font-family: 'IBM Plex Mono', monospace;
+}
+h1{
+    font-weight: 700;
+}
+
+p{
+    font-weight: 400; 
+}
+
+
