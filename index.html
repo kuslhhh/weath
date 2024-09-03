@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weath</title>
+    <title>Weather App</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -16,14 +16,14 @@
         </div>
 
         <div class="error">
-            <h2> Invalid city name </h2>
+            <h2>Invalid city name</h2>
         </div>
-        
+
         <div class="weather">
-            <img src="images/rain.png" class="weather-icon" alt="rain">
-            <h1 class="temp">22°c</h1>
+            <img src="images/rain.png" class="weather-icon" alt="weather icon">
+            <h1 class="temp">22°C</h1>
             <h2 class="city">New York</h2>
-            
+
             <div class="details">
                 <div class="col">
                     <img src="images/humidity.png" alt="humidity">
@@ -40,62 +40,102 @@
                     </div>
                 </div>
             </div>
-         </div>
+        </div>
+
+        <div class="history">
+            <h2>Search History</h2>
+            <ul id="history-list">
+                <!-- List of previous searches will be appended here -->
+            </ul>
+        </div>
     </div>
 
     <script>
-
         const apiKey = "115cbf624d524785d7fbf9d81cde845d";
         const apiUrl = "https://api.openweathermap.org/data/2.5/weather?&units=metric&q=";
-
-        const searchBox = document.querySelector(" .search input");
+    
+        const searchBox = document.querySelector(".search input");
         const searchBtn = document.querySelector(".search button");
         const weatherIcon = document.querySelector(".weather-icon");
-
+        const historyList = document.getElementById("history-list");
+        const historySection = document.querySelector(".history");
+        const weatherSection = document.querySelector(".weather");
+        const errorSection = document.querySelector(".error");
+    
+        // Retrieve history from local storage
+        let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
+    
+        function updateHistory() {
+            historyList.innerHTML = "";  // Clear current history list
+            history.forEach((city) => {
+                const li = document.createElement("li");
+                li.textContent = city;
+                li.addEventListener("click", () => {
+                    searchBox.value = city;
+                    checkWeather(city);
+                });
+                historyList.appendChild(li);
+            });
+        }
+    
         async function checkWeather(city) {
             const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
-
-            if(response.status == 404) {
-                document.querySelector(".error").style.display = "block";
-                document.querySelector(".weather").style.display = "none";
+    
+            if (response.status == 404) {
+                // Show error and history sections, hide weather section
+                errorSection.style.display = "block";
+                weatherSection.style.display = "none";
+                historySection.style.display = "block";
             } else {
                 var data = await response.json();
     
                 document.querySelector(".city").innerHTML = data.name;
-                document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°c";
+                document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
                 document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
                 document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
     
-                if (data.weather[0].main == "Clouds"){
+                if (data.weather[0].main === "Clouds") {
                     weatherIcon.src = "images/clouds.png";
-                } else if(data.weather[0].main == "Rain") {
+                } else if (data.weather[0].main === "Rain") {
                     weatherIcon.src = "images/rain.png";
-                } else if(data.weather[0].main == "Clear") {
+                } else if (data.weather[0].main === "Clear") {
                     weatherIcon.src = "images/clear.png";
-                } else if(data.weather[0].main == "Drizzle") {
+                } else if (data.weather[0].main === "Drizzle") {
                     weatherIcon.src = "images/drizzle.png";
-                } else if(data.weather[0].main == "Mist") {
+                } else if (data.weather[0].main === "Mist") {
                     weatherIcon.src = "images/mist.png";
                 }
     
-                document.querySelector(".weather").style.display = "block";
-                document.querySelector(".error").style.display = "none";
-            }            
+                // Show weather section, hide error and history sections
+                weatherSection.style.display = "block";
+                errorSection.style.display = "none";
+                historySection.style.display = "none";
+    
+                // Add city to history if not already present
+                if (!history.includes(city)) {
+                    history.push(city);
+                    localStorage.setItem("searchHistory", JSON.stringify(history));
+                    updateHistory();
+                }
+            }
         }
-
+    
         searchBtn.addEventListener("click", () => {
-            checkWeather(searchBox.value);
-        })
+            const city = searchBox.value;
+            checkWeather(city);
+        });
+    
         searchBox.addEventListener("keypress", (event) => {
-        if (event.key === "Enter") {
-            event.preventDefault();  // Prevent form submission if inside a form
-            checkWeather(searchBox.value);
-        }
-    });
-
-        checkWeather();
-
+            if (event.key === "Enter") {
+                event.preventDefault();
+                const city = searchBox.value;
+                checkWeather(city);
+            }
+        });
+    
+        // Initialize history
+        updateHistory();
     </script>
-
+    
 </body>
 </html>

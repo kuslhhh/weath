@@ -1,30 +1,29 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'IBM Plex Mono', monospace;
 }
 
-body{
+body {
     background-color: #1A1A1A;
     color: #FFFFFF; 
 }
 
-h1, h2, h3, p, a{
+h1, h2, h3, p, a {
     font-family: 'IBM Plex Mono', monospace;
 }
-h1{
+
+h1 {
     font-weight: 700;
 }
 
-p{
+p {
     font-weight: 400; 
 }
 
-
 /* Card Container */
-
-.card{
+.card {
     width: 90%;
     max-width: 470px;
     background: linear-gradient(135deg, #FF69B4, #FF2D00);
@@ -36,8 +35,7 @@ p{
 }
 
 /* Search Bar */
-
-.search{
+.search {
     width: 100%;
     display: flex;
     align-items: center;
@@ -51,7 +49,7 @@ p{
     opacity: 0.8; 
 }
 
-.search input{
+.search input {
     border: 0; 
     outline: 0;
     background: #ebfffc;
@@ -64,33 +62,32 @@ p{
     font-size: 18px;
 }
 
-.search button{
+.search button {
     border: 0;
     outline: 0;
     background: #ebfffc;
     border-radius: 50%;
     width: 60px;
     height: 60px;
-    cursor: pointer ;
+    cursor: pointer;
 }
 
-.search button img{
+.search button img {
     width: 16px;
 }
 
 /* Weather */
-
-.weather-icon{
+.weather-icon {
     width: 170px;
     margin-top: 30px; 
 }
 
-.weather h1{
+.weather h1 {
     font-size: 80px;
     font-weight: 500;
 }
 
-.weather h2{
+.weather h2 {
     font-size: 45px;
     font-weight: 400;
     margin-top: -10px;
@@ -104,30 +101,46 @@ p{
     margin-top: 50px;
 }
 
-.col{
+.col {
     display: flex;
     align-items: center;
     text-align: left;
 }
 
-.col img{
+.col img {
     width: 40px;
     margin-right: 10px;
 }
 
-.humidity .wind{
+.humidity .wind {
     font-size: 28px;
     margin-top: -6px;
 }
 
-.weather{
+.weather {
     display: none;
 }
 
-.error{
+.error {
     text-align: left;
     margin-left: 10px;
     font-size: 14px;
     margin-top: 10px;
     display: none;
+}
+
+/* History */
+.history {
+    margin-top: 20px;
+}
+
+#history-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#history-list li {
+    cursor: pointer;
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
 }
